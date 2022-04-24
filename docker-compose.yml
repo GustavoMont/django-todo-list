@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    container_name: todolist-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=coiso.com
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: todolist-django
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+    environment:
+      - MYSQL_NAME=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=coiso.com
+    depends_on:
+      - db
+volumes:
+  data:
